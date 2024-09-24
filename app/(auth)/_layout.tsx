@@ -1,9 +1,10 @@
 
-import { Stack } from "expo-router";
+import { useAuth } from "@clerk/clerk-expo";
+import { Redirect, Stack } from "expo-router";
 
 
 export default function Layout() {
- 
+   
   return (
     <Stack>
       <Stack.Screen name="welcome" options={{ headerShown: false }} />
