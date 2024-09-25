@@ -8,6 +8,7 @@ import { Link, router } from "expo-router";
 import OAuth from "@/components/OAuth";
 import { useSignUp } from "@clerk/clerk-expo";
 import ReactNativeModal from "react-native-modal";
+import { fetchAPI } from "@/lib/fetch";
 const SignUp = () => {
     const { isLoaded, signUp, setActive } = useSignUp();
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -53,7 +54,14 @@ const SignUp = () => {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code:verification.code,
       });
-
+       await fetchAPI("/(api)/user", {
+         method: "POST",
+         body: JSON.stringify({
+           name: form.name,
+           email: form.email,
+           clerkId: completeSignUp.createdUserId,
+         }),
+       });
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
         setVerification({
