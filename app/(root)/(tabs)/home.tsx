@@ -2,8 +2,10 @@ import GoogleTextInput from "@/components/GoogleTextInput";
 import Map from "@/components/Map";
 import RideCard from "@/components/RideCard";
 import { icons, images } from "@/constants";
+import { useLocationStore } from "@/store";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { Link, router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -123,13 +125,23 @@ const recentRides = [
   ],
 ];
 const Home = () => {
+  const { setUserLocation, setDestinationLocation } = useLocationStore();
   const { signOut } = useAuth();
   const { user } = useUser();
   const loading = true;
+  const [hasPermissons,setHasPermissons] =useState(false);
+
   const handleSignOut = () => {
     signOut();
     router.replace("/(auth)/sign-in");
   };
+  useEffect(() => {
+    const requestLocation = async ()=>{
+       let { status } = await Location.request
+    };
+    requestLocation();
+  }, [])
+  
   const handleDestinationPress = () => {};
   return (
     <SafeAreaView className="bg-general-500">
