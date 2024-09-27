@@ -6,6 +6,7 @@ import { useLocationStore } from "@/store";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
+import * as Location from "expo-location";
 import {
   ActivityIndicator,
   FlatList,
@@ -129,19 +130,35 @@ const Home = () => {
   const { signOut } = useAuth();
   const { user } = useUser();
   const loading = true;
-  const [hasPermissons,setHasPermissons] =useState(false);
+  const [hasPermissons, setHasPermissons] = useState(false);
 
   const handleSignOut = () => {
     signOut();
     router.replace("/(auth)/sign-in");
   };
   useEffect(() => {
-    const requestLocation = async ()=>{
-       let { status } = await Location.request
+    const requestLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setHasPermissons(false);
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      const address = await Location.reverseGeocodeAsync({
+        latitude: location.coords?.latitude!,
+        longitude: location.coords?.longitude!,
+      });
+      setUserLocation({
+        latitude: location.coords?.latitude,
+        longitude: location.coords?.longitude,
+        address: `${address[0].name}, ${address[0].region}`,
+      });
     };
     requestLocation();
-  }, [])
-  
+  }, []);
+
   const handleDestinationPress = () => {};
   return (
     <SafeAreaView className="bg-general-500">
