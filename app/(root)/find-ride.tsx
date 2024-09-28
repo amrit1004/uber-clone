@@ -16,7 +16,7 @@ const FindRide = () => {
   } = useLocationStore();
 
   return (
-    <RideLayout title="Ride">
+    <RideLayout title="Ride" snapPoints={["85%"]}>
       <View className="my-3">
         <Text className="mb-3 text-lg font-JakartaSemiBold">From</Text>
 
